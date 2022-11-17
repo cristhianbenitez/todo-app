@@ -1,0 +1,27 @@
+.todo-app {
+}
+
+.todo-app__container {
+}
+
+.todo-app__heading {
+}
+
+.todo-app__navbar {
+}
+.todo-app__navbar__menu {
+  display: flex;
+}
+
+.todo-app__searchbox {
+  display: flex;
+}
+
+.todo-app__searchbox__input {
+}
+
+.todo-app__searchbox__btn {
+}
+
+.todo-app__todo {
+}
