@@ -5,9 +5,22 @@ function App() {
   const [text, setText] = React.useState('');
   const [tasks, setTasks] = React.useState([]);
 
+  const taskById = (id) => tasks.find((t) => t.id === id);
+
   const addNew = (task) => {
     task.id = Math.round(Math.random() * 10000);
     setTasks(tasks.concat(task));
+  };
+
+  const completeTask = (id) => {
+    const task = taskById(id);
+
+    const complete = {
+      ...task,
+      isCompleted: !task.isCompleted
+    };
+
+    setTasks(tasks.map((t) => (t.id === id ? complete : t)));
   };
 
   const handleChange = (e) => {
@@ -16,9 +29,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     addNew({ text: text, isActive: false, isCompleted: false });
-
     setText('');
   };
 
@@ -52,8 +63,21 @@ function App() {
           </form>
 
           <ul className="todo-app__todo-list">
-            {tasks.map((task) => (
-              <li key={task.id}>{task.text}</li>
+            {tasks.map(({ text, id, isCompleted, isActive }) => (
+              <li key={id}>
+                <input
+                  type="checkbox"
+                  id="task-checkbox"
+                  onChange={() => completeTask(id)}
+                />
+                <label
+                  for="task-checkbox"
+                  style={{ textDecoration: isCompleted && 'line-through' }}
+                >
+                  {text}
+                </label>
+                {isCompleted && <span>Delete</span>}
+              </li>
             ))}
           </ul>
         </section>
