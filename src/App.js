@@ -4,8 +4,11 @@ import './App.css';
 function App() {
   const [text, setText] = React.useState('');
   const [tasks, setTasks] = React.useState([]);
+  const [currentTodos, setCurrentTodos] = React.useState('all');
 
   const taskById = (id) => tasks.find((t) => t.id === id);
+
+  const isAnyTaskCompleted = tasks.find((t) => t.isCompleted === true);
 
   const addNew = (task) => {
     task.id = Math.round(Math.random() * 10000);
@@ -17,7 +20,8 @@ function App() {
 
     const complete = {
       ...task,
-      isCompleted: !task.isCompleted
+      isCompleted: !task.isCompleted,
+      isActive: !task.isActive
     };
 
     setTasks(tasks.map((t) => (t.id === id ? complete : t)));
@@ -29,8 +33,28 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addNew({ text: text, isActive: false, isCompleted: false });
-    setText('');
+    if (text.length > 0) {
+      addNew({ text: text, isActive: true, isCompleted: false });
+      setText('');
+    }
+  };
+
+  const conditionedTasks = () => {
+    if (currentTodos === 'all') return tasks;
+    if (currentTodos === 'active')
+      return tasks.filter((t) => t.isActive === true);
+    if (currentTodos === 'completed')
+      return tasks.filter((t) => t.isCompleted === true);
+  };
+
+  const deleteTask = (taskId) => {
+    const filteredTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(filteredTasks);
+  };
+
+  const deleteAllCompleted = () => {
+    const filteredTasks = tasks.filter((task) => task.isCompleted !== true);
+    setTasks(filteredTasks);
   };
 
   return (
@@ -40,9 +64,9 @@ function App() {
 
         <nav className="todo-app__navbar">
           <ul className="todo-app__navbar__menu">
-            <li>All</li>
-            <li>Active</li>
-            <li>Completed</li>
+            <li onClick={() => setCurrentTodos('all')}>All</li>
+            <li onClick={() => setCurrentTodos('active')}>Active</li>
+            <li onClick={() => setCurrentTodos('completed')}>Completed</li>
           </ul>
         </nav>
 
@@ -63,23 +87,28 @@ function App() {
           </form>
 
           <ul className="todo-app__todo-list">
-            {tasks.map(({ text, id, isCompleted, isActive }) => (
+            {conditionedTasks().map(({ text, id, isCompleted, isActive }) => (
               <li key={id}>
                 <input
                   type="checkbox"
-                  id="task-checkbox"
+                  id={`task-checkbox-${id}`}
                   onChange={() => completeTask(id)}
                 />
                 <label
-                  for="task-checkbox"
+                  for={`task-checkbox-${id}`}
                   style={{ textDecoration: isCompleted && 'line-through' }}
                 >
                   {text}
                 </label>
-                {isCompleted && <span>Delete</span>}
+                {isCompleted && currentTodos === 'completed' && (
+                  <span onClick={() => deleteTask(id)}>Delete</span>
+                )}
               </li>
             ))}
           </ul>
+          {isAnyTaskCompleted && currentTodos === 'completed' && (
+            <span onClick={deleteAllCompleted}>Delete</span>
+          )}
         </section>
       </div>
     </div>
