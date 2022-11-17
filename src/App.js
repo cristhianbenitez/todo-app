@@ -3,8 +3,16 @@ import './App.css';
 
 function App() {
   const [text, setText] = React.useState('');
-  const [tasks, setTasks] = React.useState([]);
+  const [tasks, setTasks] = React.useState(() => {
+    const saved = localStorage.getItem('tasks');
+    const initialValue = JSON.parse(saved);
+    return initialValue || [];
+  });
   const [currentTodos, setCurrentTodos] = React.useState('all');
+
+  React.useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const taskById = (id) => tasks.find((t) => t.id === id);
 
@@ -93,9 +101,10 @@ function App() {
                   type="checkbox"
                   id={`task-checkbox-${id}`}
                   onChange={() => completeTask(id)}
+                  checked={isCompleted}
                 />
                 <label
-                  for={`task-checkbox-${id}`}
+                  htmlFor={`task-checkbox-${id}`}
                   style={{ textDecoration: isCompleted && 'line-through' }}
                 >
                   {text}
