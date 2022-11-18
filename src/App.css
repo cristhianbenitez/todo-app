@@ -2,27 +2,129 @@
 }
 
 .todo-app__container {
-
+  max-width: 610px;
+  margin: 0 auto;
 }
 
 .todo-app__heading {
+  text-align: center;
+  margin-bottom: 3.625rem;
+  font-weight: 700;
+  font-size: 2.25rem;
+  color: #333333;
+  font-family: 'Raleway', sans-serif;
 }
 
 .todo-app__navbar {
+  padding: 0 3rem;
+  border-bottom: 1px solid #bdbdbd;
+  margin-bottom: 1.125rem;
 }
 .todo-app__navbar__menu {
   display: flex;
+  justify-content: space-between;
+
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
-.todo-app__searchbox {
+.todo-app__navbar__menu li {
+  position: relative;
+  height: 100%;
+  padding-bottom: 1.125rem;
+  text-align: center;
+  width: 90px;
+}
+
+.active-tab::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  left: 0;
+  bottom: 0;
+  background: #2f80ed;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.todo-app__search-box {
   display: flex;
+  width: 100%;
+  justify-content: space-between;
+
+  margin-bottom: 2rem;
 }
 
-.todo-app__searchbox__input {
+.todo-app__search-box__input input {
+  width: 100%;
+  height: 100%;
 }
 
-.todo-app__searchbox__btn {
+.todo-app__search-box__input {
+  border: 1px solid #bdbdbd;
+  border-radius: 12px;
+  width: 70%;
+  padding: 1.25rem 0.75rem;
+}
+
+.todo-app__search-box__btn {
+  background: #2f80ed;
+  box-shadow: 0px 2px 6px rgba(127, 177, 243, 0.4);
+  border-radius: 12px;
+  padding: 0.625rem 2.5rem;
+  color: #fff;
+  font-size: 0.75rem;
+
+  width: 20%;
 }
 
 .todo-app__todo {
+  background: black;
+  width: 100%;
+  justify-content: space-between;
+}
+.todo-app__todo-list {
+  margin-bottom: 2rem;
+}
+
+.todo-app__todo-list__item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.todo-app__todo-list__item > div {
+  display: flex;
+  align-items: center;
+}
+
+.todo-app__todo-list__item__input {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 4px;
+  margin-right: 0.375rem;
+}
+.todo-app__todo-list__item__label {
+}
+
+.todo-app__todo-list__item__icon {
+  fill: #bdbdbd;
+}
+
+.todo-app__delete-all-btn {
+  border: none;
+  background: #eb5757;
+  border-radius: 4px;
+  padding: 0.75rem 1.625rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  float: right;
+}
+
+.material-symbols-outlined {
+  color: #bdbdbd;
 }

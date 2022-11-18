@@ -1,14 +1,12 @@
 import React from 'react';
+
 import './App.css';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
 function App() {
   const [text, setText] = React.useState('');
-  const [tasks, setTasks] = React.useState(() => {
-    const saved = localStorage.getItem('tasks');
-    const initialValue = JSON.parse(saved);
-    return initialValue || [];
-  });
-  const [currentTodos, setCurrentTodos] = React.useState('all');
+  const [tasks, setTasks] = useLocalStorage('tasks', []);
+  const [currentTab, setCurrentTab] = useLocalStorage('currentTab', 'all');
 
   React.useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -47,11 +45,15 @@ function App() {
     }
   };
 
+  const handleCurrentTodo = (e) => {
+    setCurrentTab(e.target.innerText.toLowerCase());
+  };
+
   const conditionedTasks = () => {
-    if (currentTodos === 'all') return tasks;
-    if (currentTodos === 'active')
+    if (currentTab === 'all') return tasks;
+    if (currentTab === 'active')
       return tasks.filter((t) => t.isActive === true);
-    if (currentTodos === 'completed')
+    if (currentTab === 'completed')
       return tasks.filter((t) => t.isCompleted === true);
   };
 
@@ -72,51 +74,74 @@ function App() {
 
         <nav className="todo-app__navbar">
           <ul className="todo-app__navbar__menu">
-            <li onClick={() => setCurrentTodos('all')}>All</li>
-            <li onClick={() => setCurrentTodos('active')}>Active</li>
-            <li onClick={() => setCurrentTodos('completed')}>Completed</li>
+            {['All', 'Active', 'Completed'].map((str, i) => {
+              const activeClass =
+                currentTab === str.toLowerCase() ? 'active-tab' : '';
+              return (
+                <li key={i} onClick={handleCurrentTodo} className={activeClass}>
+                  {str}
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
-        <section>
-          <form className="todo-app__searchbox" onSubmit={handleSubmit}>
-            <div className="todo-app__searchbox__input">
-              <input
-                type="text"
-                placeholder="add details"
-                onChange={handleChange}
-                value={text}
-              />
-            </div>
+        <section className="main">
+          {currentTab !== 'completed' && (
+            <form className="todo-app__search-box" onSubmit={handleSubmit}>
+              <div className="todo-app__search-box__input">
+                <input
+                  type="text"
+                  placeholder="add details"
+                  onChange={handleChange}
+                  value={text}
+                />
+              </div>
 
-            <button className='todo-app__searchbox__btn"' type="submit">
-              Add
-            </button>
-          </form>
+              <button className="todo-app__search-box__btn" type="submit">
+                Add
+              </button>
+            </form>
+          )}
 
           <ul className="todo-app__todo-list">
             {conditionedTasks().map(({ text, id, isCompleted, isActive }) => (
-              <li key={id}>
-                <input
-                  type="checkbox"
-                  id={`task-checkbox-${id}`}
-                  onChange={() => completeTask(id)}
-                  checked={isCompleted}
-                />
-                <label
-                  htmlFor={`task-checkbox-${id}`}
-                  style={{ textDecoration: isCompleted && 'line-through' }}
-                >
-                  {text}
-                </label>
-                {isCompleted && currentTodos === 'completed' && (
-                  <span onClick={() => deleteTask(id)}>Delete</span>
+              <li key={id} className="todo-app__todo-list__item">
+                <div>
+                  <input
+                    type="checkbox"
+                    id={`task-checkbox-${id}`}
+                    onChange={() => completeTask(id)}
+                    checked={isCompleted}
+                    className="todo-app__todo-list__item__input"
+                  />
+                  <label
+                    className="todo-app__todo-list__item__label"
+                    htmlFor={`task-checkbox-${id}`}
+                    style={{ textDecoration: isCompleted && 'line-through' }}
+                  >
+                    {text}
+                  </label>
+                </div>
+                {isCompleted && currentTab === 'completed' && (
+                  <span
+                    className="material-symbols-outlined"
+                    onClick={() => deleteTask(id)}
+                  >
+                    delete
+                  </span>
                 )}
               </li>
             ))}
           </ul>
-          {isAnyTaskCompleted && currentTodos === 'completed' && (
-            <span onClick={deleteAllCompleted}>Delete</span>
+          {isAnyTaskCompleted && currentTab === 'completed' && (
+            <button
+              className="todo-app__delete-all-btn"
+              onClick={deleteAllCompleted}
+            >
+              <span class="material-symbols-outlined ">delete_forever</span>
+              delete all
+            </button>
           )}
         </section>
       </div>
